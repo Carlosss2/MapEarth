@@ -13,13 +13,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlos.mapearth.features.home.presentation.components.*
 import com.carlos.mapearth.features.home.presentation.viewmodels.HomeViewModel
 import com.carlos.mapearth.features.home.presentation.viewmodels.HomeViewModelFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.compose.runtime.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(factory: HomeViewModelFactory) {
     val viewModel: HomeViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var searchQuery by remember { mutableStateOf("") }
+    var searchQuery = remember { MutableStateFlow("") }
 
     Column(
         modifier = Modifier
@@ -38,9 +40,9 @@ fun HomeScreen(factory: HomeViewModelFactory) {
             modifier = Modifier.fillMaxWidth()
         ) {
             SearchBar(
-                searchQuery = searchQuery,
-                onSearchQueryChange = { searchQuery = it },
-                onSearch = { viewModel.searchByName(searchQuery) }
+                searchQuery = searchQuery.collectAsStateWithLifecycle().value,
+                onSearchQueryChange = { searchQuery.value = it },
+                onSearch = { viewModel.searchByName(searchQuery.value) }
             )
 
             FilterIcon(
