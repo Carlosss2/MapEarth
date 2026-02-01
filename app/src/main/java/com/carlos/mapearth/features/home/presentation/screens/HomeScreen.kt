@@ -21,7 +21,7 @@ import androidx.compose.runtime.collectAsState
 fun HomeScreen(factory: HomeViewModelFactory) {
     val viewModel: HomeViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var searchQuery = remember { MutableStateFlow("") }
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -40,9 +40,9 @@ fun HomeScreen(factory: HomeViewModelFactory) {
             modifier = Modifier.fillMaxWidth()
         ) {
             SearchBar(
-                searchQuery = searchQuery.collectAsStateWithLifecycle().value,
-                onSearchQueryChange = { searchQuery.value = it },
-                onSearch = { viewModel.searchByName(searchQuery.value) }
+                searchQuery = searchQuery,
+                onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
+                onSearch = { viewModel.searchByName() }
             )
 
             FilterIcon(

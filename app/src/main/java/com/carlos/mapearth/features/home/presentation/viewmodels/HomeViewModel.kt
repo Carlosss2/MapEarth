@@ -23,10 +23,15 @@ class HomeViewModel(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
 
+    fun onSearchQueryChange(query: String) {
+        _searchQuery.value = query
+    }
 
-    fun searchByName(name: String) {
-        load { getCountryByNameUseCase(name) }
+    fun searchByName() {
+        load { getCountryByNameUseCase(_searchQuery.value) }
     }
 
     fun searchByRegion(region: String) {
